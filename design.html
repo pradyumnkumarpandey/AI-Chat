@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #chat {
+            background-color: #fff;
+            border-radius: 10px;
+            width: 800px;
+            height: 650px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        #messages {
+            flex: 1;
+            overflow-y: scroll;
+            padding: 20px;
+            border-bottom: 2px solid #eee;
+            margin-bottom: 10px;
+        }
+
+        #messages div {
+            background-color: #e0f7fa;
+            padding: 8px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            max-width: 80%;
+        }
+
+        #messages div:nth-child(odd) {
+            background-color: #f1f8e9;
+            align-self: flex-start;
+        }
+
+        #messages div:nth-child(even) {
+            background-color: #ffecb3;
+            align-self: flex-end;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            margin: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: #00796b;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #00796b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #004d40;
+        }
+
+        .input-container {
+            display: flex;
+            padding: 10px;
+            justify-content: space-between;
+            background-color: #fff;
+            border-top: 2px solid #eee;
+        }
+
+        .input-container input {
+            width: 80%;
+        }
+
+        .input-container button {
+            width: 15%;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="chat">
+        <h1>AI Chat</h1>
+        <div id="messages"></div>
+        <div class="input-container">
+            <input id="messageInput" type="text" placeholder="Type a message to get reply from AI!">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const ws = new WebSocket("ws://localhost:8000/ws/chat");
+
+        ws.onmessage = function(event) {
+            const messages = document.getElementById('messages');
+            const message = document.createElement('div');
+            message.textContent = event.data;
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = "Delete";
+            deleteButton.onclick = function() {
+                message.remove(); // Remove the message div
+            };
+
+            message.appendChild(deleteButton);
+            messages.appendChild(message);
+            messages.scrollTop = messages.scrollHeight; // Auto scroll to the bottom
+        };
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const messages = document.getElementById('messages'); // Define 'messages' here
+            const sentMessage = document.createElement('div');
+
+            console.log(sentMessage)
+            console.log(messages)
+
+            sentMessage.textContent = "You: " + input.value; // Show "You: " before the message
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = "Delete";
+            deleteButton.onclick = function() {
+                sentMessage.remove(); // Remove the message div
+            };
+
+            sentMessage.appendChild(deleteButton);
+            // Append the sent message to the messages div
+            messages.appendChild(sentMessage);
+            messages.scrollTop = messages.scrollHeight; // Auto scroll to the bottom
+            
+            // Send the message through WebSocket
+            ws.send(input.value);
+            
+            // Clear the input field after sending the message
+            input.value = '';
+        }
+    </script>
+</body>
+</html>
