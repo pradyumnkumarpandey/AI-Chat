@@ -185,7 +185,7 @@
     </div>
 
     <script>
-        const ws = new WebSocket("ws://localhost:8000/ws/chat");
+        const ws = new WebSocket("wss://ai-chat-2ct3.onrender.com/ws/chat");
 
         ws.onmessage = function(event) {
             const messages = document.getElementById('messages');
