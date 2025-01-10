@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="icon" type="image/x-icon" href="chatbot.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Chat</title>
     <style>
+        :root {
+            font-size: 16px; /* Base font size */
+        }
+
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f9;
@@ -20,13 +25,22 @@
             color: #333;
             text-align: center;
             margin-bottom: 20px;
+            font-size: 1.5rem; /* Scales with root font size */
+        }
+
+        h6 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 2px;
+            font-size: 0.9rem;
         }
 
         #chat {
             background-color: #fff;
             border-radius: 10px;
-            width: 800px;
-            height: 650px;
+            width: 80%;
+            max-width: 600px;
+            height: 90%;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
@@ -38,6 +52,7 @@
             padding: 20px;
             border-bottom: 2px solid #eee;
             margin-bottom: 10px;
+            font-size: 1rem; /* Normal text size */
         }
 
         #messages div {
@@ -46,6 +61,7 @@
             border-radius: 5px;
             margin-bottom: 10px;
             max-width: 80%;
+            word-wrap: break-word;
         }
 
         #messages div:nth-child(odd) {
@@ -59,12 +75,11 @@
         }
 
         input[type="text"] {
-            width: 80%;
+            width: 100%;
             padding: 10px;
-            margin: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            font-size: 16px;
+            font-size: 1rem;
             outline: none;
         }
 
@@ -73,13 +88,13 @@
         }
 
         button {
-            padding: 10px 20px;
+            padding: 10px;
             background-color: #00796b;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 1rem;
         }
 
         button:hover {
@@ -92,20 +107,75 @@
             justify-content: space-between;
             background-color: #fff;
             border-top: 2px solid #eee;
+            gap: 10px;
         }
 
         .input-container input {
-            width: 80%;
+            flex: 1;
         }
 
         .input-container button {
-            width: 15%;
+            flex: 0 0 auto;
+            width: 20%;
         }
 
+        /* Responsive Text Sizes */
+        @media (max-width: 768px) {
+            :root {
+                font-size: 14px; /* Scale down font size for smaller screens */
+            }
+
+            h1 {
+                font-size: 1.2rem;
+            }
+
+            h6 {
+                font-size: 0.8rem;
+            }
+
+            #messages {
+                font-size: 0.9rem;
+            }
+
+            button {
+                font-size: 0.9rem;
+            }
+
+            input[type="text"] {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            :root {
+                font-size: 12px; /* Further scale down for very small screens */
+            }
+
+            h1 {
+                font-size: 1rem;
+            }
+
+            h6 {
+                font-size: 0.7rem;
+            }
+
+            #messages {
+                font-size: 0.8rem;
+            }
+
+            button {
+                font-size: 0.8rem;
+            }
+
+            input[type="text"] {
+                font-size: 0.8rem;
+            }
+        }
     </style>
 </head>
 <body>
     <div id="chat">
+        <h6>Developed by: <a href="https://www.linkedin.com/in/pradyumn-kumar-pandey-1698321a0/" target="_blank">Pradyumn Kumar Pandey</a></h6>
         <h1>AI Chat</h1>
         <div id="messages"></div>
         <div class="input-container">
@@ -137,9 +207,6 @@
             const messages = document.getElementById('messages'); // Define 'messages' here
             const sentMessage = document.createElement('div');
 
-            console.log(sentMessage)
-            console.log(messages)
-
             sentMessage.textContent = "You: " + input.value; // Show "You: " before the message
             const deleteButton = document.createElement('button');
             deleteButton.textContent = "Delete";
@@ -148,14 +215,10 @@
             };
 
             sentMessage.appendChild(deleteButton);
-            // Append the sent message to the messages div
             messages.appendChild(sentMessage);
             messages.scrollTop = messages.scrollHeight; // Auto scroll to the bottom
             
-            // Send the message through WebSocket
             ws.send(input.value);
-            
-            // Clear the input field after sending the message
             input.value = '';
         }
     </script>
