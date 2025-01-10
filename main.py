@@ -7,6 +7,8 @@ from fastapi.staticfiles import StaticFiles
 from starlette.requests import Request
 import os
 from fastapi.middleware.cors import CORSMiddleware
+import logging
+logger = logging.getLogger(__name__)
 app = FastAPI()
 
 app.add_middleware(
@@ -28,12 +30,17 @@ async def render_html(request: Request):
 @app.websocket("/ws/chat")
 async def chat_websocket(websocket: WebSocket):
     await websocket.accept()
-
+    logger.info({"message":"connection open"})
     try:
         while True:
+            logger.info({"message":"Ready to receive text"})
             data = await websocket.receive_text()
+            logger.info({'message':"text received","text":data})
             ai_reponse = get_gemini_reponse(data)
+            logger.info({'message':"response received","text":ai_reponse})
             await websocket.send_text(f"AI:  {ai_reponse}")
     except Exception as e:
+        logger.info({'message':"Exception received","text":str(e)})
+
         print(e)
         print("Client disconnected.")
