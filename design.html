@@ -190,7 +190,10 @@
         ws.onmessage = function(event) {
             const messages = document.getElementById('messages');
             const message = document.createElement('div');
-            message.textContent = event.data;
+            // Format the text before displaying it
+            const formattedText = formatText(event.data);
+            message.innerHTML = formattedText;
+            // message.textContent = event.data;
             const deleteButton = document.createElement('button');
             deleteButton.textContent = "Delete";
             deleteButton.onclick = function() {
@@ -206,7 +209,7 @@
             const input = document.getElementById('messageInput');
             const messages = document.getElementById('messages'); // Define 'messages' here
             const sentMessage = document.createElement('div');
-
+            
             sentMessage.textContent = "You: " + input.value; // Show "You: " before the message
             const deleteButton = document.createElement('button');
             deleteButton.textContent = "Delete";
@@ -221,6 +224,10 @@
             ws.send(input.value);
             input.value = '';
         }
+        // Function to format the text with '**' as bold
+        function formatText(inputText) {
+        return inputText.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+}
     </script>
 </body>
 </html>
